@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-describe "Merchants API" do
-  it "sends a list of merchants" do
+RSpec.describe "Merchants API" do
+  it 'sends a list of merchants' do
     create_list(:merchant, 30)
 
     get '/api/v1/merchants', params: { page: 1 } #?page
