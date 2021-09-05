@@ -8,7 +8,7 @@ RSpec.describe 'Merchant Find API' do
   describe 'GET /api/v1/merchants/find' do
     it 'can find a single merchant based on a search' do
 
-      get '/api/v1/merchants/find'
+      get "/api/v1/merchants/find"
 
       expect(response).to be_successful
     end
