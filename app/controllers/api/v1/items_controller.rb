@@ -31,8 +31,20 @@ class Api::V1::ItemsController < ApplicationController
 
   def update
     item = Item.find(params[:id])
-    item.update(item_params)
-    render json: ItemSerializer.new(item)
+
+    if params[:item][:merchant_id] && Merchant.exists?(:id =>   params[:item][:merchant_id]) == false
+      # payload = {
+      #   error: "merchant does not exist",
+      #   status: 400
+      # }
+
+      # render :json => payload, :status => :bad_request
+      render :status => :bad_request
+
+    else
+      item.update(item_params)
+      render json: ItemSerializer.new(item)
+    end
   end
 
   private
