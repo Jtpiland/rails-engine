@@ -32,7 +32,7 @@ class Api::V1::ItemsController < ApplicationController
   def update
     item = Item.find(params[:id])
 
-    if params[:item][:merchant_id] && Merchant.exists?(:id =>   params[:item][:merchant_id]) == false
+    if params[:item][:merchant_id] && Merchant.exists?(:id => params[:item][:merchant_id]) == false
       # payload = {
       #   error: "merchant does not exist",
       #   status: 400
@@ -51,5 +51,6 @@ class Api::V1::ItemsController < ApplicationController
 
   def item_params
     params.permit(:name, :description, :unit_price, :merchant_id)
+      # params.require(:item).permit(:name, :description, :unit_price, :merchant_id)
   end
 end

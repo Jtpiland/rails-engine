@@ -33,7 +33,7 @@ RSpec.describe "Item Show API" do
     it 'can update information about a particular item' do
 
       put "/api/v1/items/#{Item.first.id}", params: valid_attributes
-
+      # params: JSON.generate({item: valid_attributes})
       expect(response).to be_successful
 
       item = JSON.parse(response.body, symbolize_names: true)
