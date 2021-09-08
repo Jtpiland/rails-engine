@@ -68,9 +68,13 @@ RSpec.describe Item do
   end
 
   describe '::class methods' do
-    it 'can find the top items by revenue for a specific quantity' do
+    describe '::top_items_by_revenue' do
+      it 'can find the top items by revenue for a specific quantity' do
 
-      expect(Item.top_items_by_revenue(10)).to eq([@item1, @item2, @item3, @item4, @item5, @item6, @item7, @item8, @item9, @item10])
+        expect(Item.top_items_by_revenue(10)).to eq([@item1, @item2, @item3, @item4, @item5, @item6, @item7, @item8, @item9, @item10])
+
+        expect(Item.top_items_by_revenue(1)).to eq([@item1])
+      end
     end
   end
 end
