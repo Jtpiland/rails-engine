@@ -20,27 +20,19 @@ class Api::V1::ItemsController < ApplicationController
 
   def create
     item = Item.create!(item_params)
-    render json: ItemSerializer.new(item)
+    render json: ItemSerializer.new(item), status: 201
   end
 
   def destroy
     item = Item.find(params[:id])
     item.destroy
-    # render json: ItemSerializer.new(item)
   end
 
   def update
     item = Item.find(params[:id])
 
     if params[:item][:merchant_id] && Merchant.exists?(:id => params[:item][:merchant_id]) == false
-      # payload = {
-      #   error: "merchant does not exist",
-      #   status: 400
-      # }
-
-      # render :json => payload, :status => :bad_request
       render :status => :bad_request
-
     else
       item.update(item_params)
       render json: ItemSerializer.new(item)
@@ -50,7 +42,6 @@ class Api::V1::ItemsController < ApplicationController
   private
 
   def item_params
-    params.permit(:name, :description, :unit_price, :merchant_id)
-      # params.require(:item).permit(:name, :description, :unit_price, :merchant_id)
+    params.require(:item).permit(:name, :description, :unit_price, :merchant_id)
   end
 end
