@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-describe "Merchants API" do
-  it "sends a list of merchants" do
+RSpec.describe "Merchants API" do
+  it 'sends a list of merchants' do
     create_list(:merchant, 30)
 
     get '/api/v1/merchants', params: { page: 1 } #?page
@@ -14,10 +14,10 @@ describe "Merchants API" do
 
     merchants[:data].each do |merchant|
       expect(merchant).to have_key(:id)
-      expect(merchant[:id]).to be_an(String)
+      expect(merchant[:id]).to be_a(String)
 
       expect(merchant[:attributes]).to have_key(:name)
-      expect(merchant[:attributes][:name]).to be_an(String)
+      expect(merchant[:attributes][:name]).to be_a(String)
     end
   end
 end

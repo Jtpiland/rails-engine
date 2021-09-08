@@ -1,9 +1,8 @@
 FactoryBot.define do
   factory :item do
-    quantity { Faker::Number.decimal_part(digits: 2) }
+    name { Faker::Appliance.equipment }
     sequence(:unit_price) { |n| n +150 }
-    status { Faker::Number.between(from: 0, to: 2) }
-    invoice
-    item
-  end 
+    description { Faker::ChuckNorris.fact}
+    merchant
+  end
 end
