@@ -28,17 +28,22 @@ RSpec.describe "Item Show API" do
     end
 
   describe 'PUT /api/v1/items/#{item_id}' do
-    let(:valid_attributes) { { name: 'Updated Name'} }
 
     it 'can update information about a particular item' do
 
-      put "/api/v1/items/#{Item.first.id}", params: valid_attributes
-      # params: JSON.generate({item: valid_attributes})
+      id = create(:item).id
+      previous_name = Item.last.name
+      item_params = { name: "Updated Name" }
+      headers = { "CONTENT_TYPE" => "application/json" }
+
+      patch "/api/v1/items/#{id}", headers: headers, params: JSON.generate({item: item_params})
+
+      item = Item.find_by(id: id)
+
       expect(response).to be_successful
 
-      item = JSON.parse(response.body, symbolize_names: true)
-
-      expect(item[:data][:attributes][:name]).to eq('Updated Name')
+      expect(item.name).to_not eq(previous_name)
+      expect(item.name).to eq("Updated Name")
     end
   end
 end
