@@ -1,14 +1,12 @@
 class Api::V1::ItemsController < ApplicationController
 
   def index
-    if params[:page] && params[:per_page]
-      items = Item.paginate(page: params[:page], per_page: params[:per_page])
-    elsif params[:page].to_i >= 1
-      items = Item.paginate(page: params[:page], per_page: 20)
+    if params[:page].to_i >= 1
+      items = Item.paginate(page: params[:page])
     elsif params[:per_page]
       items = Item.paginate(page: 1, per_page: params[:per_page])
     else
-      items = Item.paginate(page: 1, per_page: 20)
+      items = Item.paginate(page: 1)
     end
     render json: ItemSerializer.new(items)
   end
@@ -30,13 +28,8 @@ class Api::V1::ItemsController < ApplicationController
 
   def update
     item = Item.find(params[:id])
-
-    if params[:item][:merchant_id] && Merchant.exists?(:id => params[:item][:merchant_id]) == false
-      render :status => :bad_request
-    else
-      item.update(item_params)
-      render json: ItemSerializer.new(item)
-    end
+    item.update!(item_params)
+    render json: ItemSerializer.new(item)
   end
 
   private
