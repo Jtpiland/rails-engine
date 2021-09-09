@@ -91,5 +91,12 @@ RSpec.describe Merchant do
         expect(Merchant.top_merchants_by_items_sold(8)).to eq([@merchant1, @merchant2, @merchant3, @merchant4, @merchant5, @merchant6, @merchant7, @merchant8])
       end
     end
+
+    describe '::merchant_revenue_by_id' do #this isnt testing the revenue?????
+      it 'can find a merchant revenue by merchant id' do
+        merchant = @merchant1.id
+        expect(Merchant.merchant_revenue_by_id(merchant)).to eq(@merchant1)
+      end
+    end
   end
 end
