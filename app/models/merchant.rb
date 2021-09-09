@@ -4,6 +4,8 @@ class Merchant < ApplicationRecord
 
   validates_presence_of :name
 
+  self.per_page = 20
+
   def self.top_merchants_by_revenue(params_quantity)
     joins(items: { invoice_items: { invoice: :transactions }})
     .where("invoices.status='shipped' AND transactions.result='success'")

@@ -8,6 +8,8 @@ class Item < ApplicationRecord
   validates_presence_of :unit_price
   validates_presence_of :merchant_id
 
+  self.per_page = 20
+
   def self.top_items_by_revenue(params_quantity)
     joins(invoice_items: { invoice: :transactions })
     .where("invoices.status='shipped' AND transactions.result='success'")
