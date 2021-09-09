@@ -11,8 +11,6 @@ class Api::V1::Merchants::FindController < ApplicationController
       render json: payload
     elsif params['name'] && Merchant.exists?(:id => merchant.id) && params['name'].empty? == false
       render json: MerchantSerializer.new(merchant)
-    # elsif !params['name'] || params['name'].empty?
-    #   render :status => :bad_request
     else
       render :status => :bad_request
     end
