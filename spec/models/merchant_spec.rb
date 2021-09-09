@@ -84,5 +84,12 @@ RSpec.describe Merchant do
         expect(Merchant.top_merchants_by_revenue(10)).to eq([@merchant1, @merchant2, @merchant3, @merchant4, @merchant5, @merchant6, @merchant7, @merchant8, @merchant9, @merchant10])
       end
     end
+
+    describe '::top_merchants_by_items_sold' do
+      it 'can find the top merchants by the most items sold' do
+
+        expect(Merchant.top_merchants_by_items_sold(8)).to eq([@merchant1, @merchant2, @merchant3, @merchant4, @merchant5, @merchant6, @merchant7, @merchant8])
+      end
+    end
   end
 end
