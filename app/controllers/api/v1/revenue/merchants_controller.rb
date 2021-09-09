@@ -5,7 +5,7 @@ class Api::V1::Revenue::MerchantsController < ApplicationController
       merchants = Merchant.top_merchants_by_revenue(params['quantity'].to_i)
       render json: MerchantNameRevenueSerializer.new(merchants)
     else
-      render status: :bad_request
+      render json: {error: "must provide a valid quantity"}, status: :bad_request
     end
   end
 
