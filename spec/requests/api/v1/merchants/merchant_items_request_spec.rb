@@ -25,4 +25,10 @@ RSpec.describe "Merchant Items API" do
       expect(merchant_item[:attributes][:merchant_id]).to be_a(Integer)
     end
   end
+
+  it 'bad integer id returns 404' do 
+    get "/api/v1/merchants/1/items"
+
+    expect(response.status).to eq(404)
+  end
 end

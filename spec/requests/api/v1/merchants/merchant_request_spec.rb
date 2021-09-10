@@ -16,4 +16,10 @@ RSpec.describe "Merchant Show API" do
     expect(merchant[:data][:attributes]).to have_key(:name)
     expect(merchant[:data][:attributes][:name]).to be_a(String)
   end
+
+  it 'returns a 404 when a bad id(integer) is input' do
+		get "/api/v1/merchants/1"
+
+		expect(response.status).to eq(404)
+	end
 end

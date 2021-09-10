@@ -1,18 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Item do
-  describe 'relationships' do
-    it { should belong_to(:merchant) }
-    it { should have_many(:invoice_items) }
-    it { should have_many(:invoices).through(:invoice_items) }
-  end
-
-  describe 'validations' do
-    it { should validate_presence_of(:name) }
-    it { should validate_presence_of(:description) }
-    it { should validate_presence_of(:unit_price) }
-  end
-
+RSpec.describe 'Items by Revenue DESC' do
   before :each do
     @item1 = create(:item)
     @item2 = create(:item)
@@ -67,14 +55,78 @@ RSpec.describe Item do
     @invoice_item12 = create(:invoice_item, item_id: @item12.id, invoice_id: @invoice12.id, unit_price: 10, quantity: 1)
   end
 
-  describe '::class methods' do
-    describe '::top_items_by_revenue' do
-      it 'can find the top items by revenue for a specific quantity' do
+  it 'can fetch that top 10 items by revenue' do
 
-        expect(Item.top_items_by_revenue(10)).to eq([@item1, @item2, @item3, @item4, @item5, @item6, @item7, @item8, @item9, @item10])
+    get "/api/v1/revenue/items"
 
-        expect(Item.top_items_by_revenue(1)).to eq([@item1])
-      end
+    expect(response).to be_successful
+
+    items = JSON.parse(response.body, symbolize_names: true)
+
+    expect(items[:data].count).to eq(10)
+
+    items[:data].each do |item|
+      expect(item).to have_key(:id)
+      expect(item[:id]).to be_a(String)
+      expect(item[:attributes]).to have_key(:name)
+      expect(item[:attributes][:name]).to be_a(String)
+      expect(item[:attributes]).to have_key(:description)
+      expect(item[:attributes][:description]).to be_a(String)
+      expect(item[:attributes]).to have_key(:unit_price)
+      expect(item[:attributes][:unit_price]).to be_a(Float)
+      expect(item[:attributes]).to have_key(:merchant_id)
+      expect(item[:attributes][:merchant_id]).to be_a(Integer)
+      expect(item[:attributes]).to have_key(:revenue)
+      expect(item[:attributes][:revenue]).to be_a(Float)
     end
+  end
+
+  it 'can find the top item by revenue' do
+    quantity = 1
+
+    get "/api/v1/revenue/items?quantity=#{quantity}"
+
+    expect(response).to be_successful
+
+    item = JSON.parse(response.body, symbolize_names: true)
+
+    expect(item[:data].count).to eq(1)
+    expect(item[:data].first[:id]).to eq((@item1.id).to_s)
+  end
+
+  it 'can return all items with revenue if the params quantity is too big' do
+    quantity = 10000
+
+    get "/api/v1/revenue/items?quantity=#{quantity}"
+
+    expect(response).to be_successful
+
+    item = JSON.parse(response.body, symbolize_names: true)
+
+    expect(item[:data].count).to eq(11)
+  end
+
+  it 'sends an error if the params quantity is less than zero (sad path)' do
+    quantity = -5
+
+    get "/api/v1/revenue/items?quantity=#{quantity}"
+
+    expect(response).to_not be_successful
+  end
+
+  it 'returns an error if the params quantity is left blank (sad path)' do
+    quantity = ""
+
+    get "/api/v1/revenue/items?quantity=#{quantity}"
+
+    expect(response).to_not be_successful
+  end
+
+  it 'returns an error if the params quantity is a string (sad path)' do
+    quantity = "asdasd"
+
+    get "/api/v1/revenue/items?quantity=#{quantity}"
+
+    expect(response).to_not be_successful
   end
 end

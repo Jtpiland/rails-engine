@@ -1,31 +1,32 @@
 require 'rails_helper'
 
-RSpec.describe Item do
-  describe 'relationships' do
-    it { should belong_to(:merchant) }
-    it { should have_many(:invoice_items) }
-    it { should have_many(:invoices).through(:invoice_items) }
-  end
-
-  describe 'validations' do
-    it { should validate_presence_of(:name) }
-    it { should validate_presence_of(:description) }
-    it { should validate_presence_of(:unit_price) }
-  end
-
+RSpec.describe 'Merchants with Most Items Sold' do
   before :each do
-    @item1 = create(:item)
-    @item2 = create(:item)
-    @item3 = create(:item)
-    @item4 = create(:item)
-    @item5 = create(:item)
-    @item6 = create(:item)
-    @item7 = create(:item)
-    @item8 = create(:item)
-    @item9 = create(:item)
-    @item10 = create(:item)
-    @item11 = create(:item)
-    @item12 = create(:item)
+    @merchant1 = create(:merchant)
+    @merchant2 = create(:merchant)
+    @merchant3 = create(:merchant)
+    @merchant4 = create(:merchant)
+    @merchant5 = create(:merchant)
+    @merchant6 = create(:merchant)
+    @merchant7 = create(:merchant)
+    @merchant8 = create(:merchant)
+    @merchant9 = create(:merchant)
+    @merchant10 = create(:merchant)
+    @merchant11 = create(:merchant)
+    @merchant12 = create(:merchant)
+
+    @item1 = create(:item, merchant_id: @merchant1.id)
+    @item2 = create(:item, merchant_id: @merchant2.id)
+    @item3 = create(:item, merchant_id: @merchant3.id)
+    @item4 = create(:item, merchant_id: @merchant4.id)
+    @item5 = create(:item, merchant_id: @merchant5.id)
+    @item6 = create(:item, merchant_id: @merchant6.id)
+    @item7 = create(:item, merchant_id: @merchant7.id)
+    @item8 = create(:item, merchant_id: @merchant8.id)
+    @item9 = create(:item, merchant_id: @merchant9.id)
+    @item10 = create(:item, merchant_id: @merchant10.id)
+    @item11 = create(:item, merchant_id: @merchant11.id)
+    @item12 = create(:item, merchant_id: @merchant12.id)
 
     @invoice1 = create(:invoice, status: 'shipped')
     @invoice2 = create(:invoice, status: 'shipped')
@@ -67,14 +68,74 @@ RSpec.describe Item do
     @invoice_item12 = create(:invoice_item, item_id: @item12.id, invoice_id: @invoice12.id, unit_price: 10, quantity: 1)
   end
 
-  describe '::class methods' do
-    describe '::top_items_by_revenue' do
-      it 'can find the top items by revenue for a specific quantity' do
+  it 'can find the merchants with the most items sold; quantity 8' do
+    quantity = 8
 
-        expect(Item.top_items_by_revenue(10)).to eq([@item1, @item2, @item3, @item4, @item5, @item6, @item7, @item8, @item9, @item10])
+    get "/api/v1/merchants/most_items?quantity=#{quantity}"
 
-        expect(Item.top_items_by_revenue(1)).to eq([@item1])
-      end
+    expect(response).to be_successful
+
+    merchants = JSON.parse(response.body, symbolize_names: true)
+
+    expect(merchants[:data].count).to eq(8)
+    merchants[:data].each do |merchant|
+      expect(merchant).to have_key(:id)
+      expect(merchant[:id]).to be_a(String)
+      expect(merchant[:attributes]).to have_key(:name)
+      expect(merchant[:attributes][:name]).to be_a(String)
     end
+  end
+
+  it 'can find the merchants with the most items sold; quantity 1' do
+    quantity = 1
+
+    get "/api/v1/merchants/most_items?quantity=#{quantity}"
+
+    expect(response).to be_successful
+
+    merchant = JSON.parse(response.body, symbolize_names: true)
+
+    expect(merchant[:data].count).to eq(1)
+    expect(merchant[:data].first[:id]).to eq((@merchant1.id).to_s)
+  end
+
+  it 'can return all merchants (100) when the quantity is too big' do
+    quantity = 100000
+
+    get "/api/v1/merchants/most_items?quantity=#{quantity}"
+
+    expect(response).to be_successful
+
+    merchants = JSON.parse(response.body, symbolize_names: true)
+
+    expect(merchants[:data].count).to eq(11)
+    merchants[:data].each do |merchant|
+      expect(merchant).to have_key(:id)
+      expect(merchant[:id]).to be_a(String)
+      expect(merchant[:attributes]).to have_key(:name)
+      expect(merchant[:attributes][:name]).to be_a(String)
+    end
+  end
+
+  it 'returns an error if the the quantity is left blank(sad path)' do
+    quantity = ""
+
+    get "/api/v1/merchants/most_items?quantity=#{quantity}"
+
+    expect(response).to_not be_successful
+  end
+
+  it 'returns an error if the quantity is string(sad path)' do
+    quantity = "asdfg"
+
+    get "/api/v1/merchants/most_items?quantity=#{quantity}"
+
+    expect(response).to_not be_successful
+  end
+
+  it 'returns an error if the quantity param is missing' do
+    get "/api/v1/merchants/most_items"
+
+    expect(response).to_not be_successful
   end
 end

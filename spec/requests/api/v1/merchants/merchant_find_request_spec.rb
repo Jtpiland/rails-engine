@@ -29,7 +29,13 @@ RSpec.describe 'Merchant Find API' do
 
       expect(result[:data][:status]).to eq(200)
     end
+
+    it 'sends an error if no name param is given' do
+
+      get "/api/v1/merchants/find?name="
+
+      expect(response).to_not be_successful
+    end
+
   end
 end
-
-#Tests that show case insensitive search?

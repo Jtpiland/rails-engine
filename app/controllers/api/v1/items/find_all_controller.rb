@@ -5,10 +5,8 @@ class Api::V1::Items::FindAllController < ApplicationController
 
     if params['name'] && params['name'].empty? == false
       render json: ItemSerializer.new(items)
-    elsif !params['name'] || params['name'].empty?
-      render :status => :bad_request
     else
-      render :status => :bad_request
+      render json: {data:{}}, :status => :bad_request
     end
   end
 end

@@ -5,7 +5,7 @@ RSpec.describe "Item Show API" do
     create_list(:item, 2)
   end
 
-  describe 'GET /api/vi/items/#{item_id}'
+  describe 'GET /api/vi/items/#{item_id}' do
     it 'sends information about a particular item' do
 
       get "/api/v1/items/#{Item.first.id}"
@@ -27,9 +27,23 @@ RSpec.describe "Item Show API" do
       expect(item[:data][:attributes][:merchant_id]).to be_a(Integer)
     end
 
+    it 'returns a 404 when a bad id(integer) is input' do 
+  		get "/api/v1/items/1"
+
+  		expect(response.status).to eq(404)
+  	end
+
+    it 'returns a 404 when an id is input as a string' do
+      id = "1"
+      get "/api/v1/items/#{id}"
+
+      expect(response.status).to eq(404)
+    end
+  end
+
   describe 'PUT /api/v1/items/#{item_id}' do
 
-    it 'can update information about a particular item' do
+    it 'can update information about a particular item by id' do
 
       id = create(:item).id
       previous_name = Item.last.name
@@ -44,6 +58,20 @@ RSpec.describe "Item Show API" do
 
       expect(item.name).to_not eq(previous_name)
       expect(item.name).to eq("Updated Name")
+    end
+
+    it 'returns a 404 when a bad id(integer) is input' do #fixed with rescue_from ActiveRecord
+  		get "/api/v1/items/1"
+
+  		expect(response.status).to eq(404)
+  	end
+
+    it 'returns a 404 when an id is input as a string' do
+      id = "1"
+
+      get "/api/v1/items/#{id}"
+
+      expect(response.status).to eq(404)
     end
   end
 end
