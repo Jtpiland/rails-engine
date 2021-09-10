@@ -1,24 +1,19 @@
-# README
+# Rails Engine
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Th goal of this project is to expose data through an API for a company developing an E-Commerce Application.
 
-Things you may want to cover:
+- Ruby version 2.7.2
 
-* Ruby version
+- ## System dependencies
 
-* System dependencies
+  - rspec-rails
+  - pry
+  - shoulda-matchers
+  - factory_bot_rails
+  - faker
+  - fast_jsonapi
+  - will_paginate
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+- How to run the test suite
+  - rspec
+  - postman test suite
