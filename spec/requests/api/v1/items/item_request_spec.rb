@@ -27,7 +27,7 @@ RSpec.describe "Item Show API" do
       expect(item[:data][:attributes][:merchant_id]).to be_a(Integer)
     end
 
-    it 'returns a 404 when a bad id(integer) is input' do 
+    it 'returns a 404 when a bad id(integer) is input' do
   		get "/api/v1/items/1"
 
   		expect(response.status).to eq(404)
@@ -60,16 +60,21 @@ RSpec.describe "Item Show API" do
       expect(item.name).to eq("Updated Name")
     end
 
-    it 'returns a 404 when a bad id(integer) is input' do #fixed with rescue_from ActiveRecord
-  		get "/api/v1/items/1"
+    it 'returns a 404 when there is a bad merchant id(integer) is input' do
 
-  		expect(response.status).to eq(404)
+      create(:item)
+
+      item_params = { merchant_id: 999999999 }
+      headers = {"CONTENT_TYPE" => "application/json"}
+      patch "/api/v1/items/#{Item.first.id}", headers: headers, params: JSON.generate({item: item_params})
+
+  		expect(response.status).to eq(400)
   	end
 
     it 'returns a 404 when an id is input as a string' do
       id = "1"
 
-      get "/api/v1/items/#{id}"
+      patch "/api/v1/items/#{id}"
 
       expect(response.status).to eq(404)
     end

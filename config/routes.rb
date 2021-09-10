@@ -5,9 +5,6 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
-      # namespace :merchants do
-      #   get '/find', to: 'api/v1/merchants/find#index'
-      # end
       namespace :merchants do
         resources :most_items, only: [:index]
       end
